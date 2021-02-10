@@ -157,31 +157,48 @@ The custom class must implement three methods:
 - debug(message)
 - set_log_level(message);
 
+## Cache Credentials
+The IoT Central device client accepts a storage manager to cache connection credentials. This allows to skip unnecessary device re-provisioning and requests to provisioning service.
+When valid credentials are present, device connects directly to IoT Central, otherwise it asks provisioning service for new credentials and eventually cache them.
+
+Provided class must have the following methods:
+
+```py
+def retrieve(self):
+    # fetch credentials. return a Credentials object
+
+def persist(self, credentials):
+    # save credentials object
+```
+
 ## One-touch device provisioning and approval
 A device can send custom data during provision process: if a device is aware of its IoT Central template Id, then it can be automatically provisioned.
 
 ### How to set IoTC template ID in your device
-Template Id can be found in the device explorer page of IoTCentral
-![Img](assets/modelid_1.png)
-![Img](assets/modelid_2.png)
+Device template id (a.k.a Model Id) is used when obtaining authorization codes for new devices and automatically assign them to the right template. By providing template id during credentials generation, user doesn't need to manually migrate or assign device from IoT Central site.
+
+In order to get the unique identifier, open configuration page for required model under "Device templates" section.
+![Img](https://github.com/iot-for-all/iotc-micropython-client/tree/master/assets/modelId.png)
+
+Click on "View Identity" and in next screen copy model urn.
+![Img](https://github.com/iot-for-all/iotc-micropython-client/tree/master/assets/modelId_2.png)
+
 
 Then call this method before connect():
 
 ```py
-client.set_model_id('<modelId>');
+client.set_model_id(model_id)
 ```
 
-### Manual approval (default)
-By default device auto-approval in IoT Central is disabled, which means that administrator needs to approve the device registration to complete the provisioning process.
+### Automatic approval (default)
+By default device auto-approval in IoT Central is enabled, which means that administrators don't need to approve device registration to complete the provisioning process when device is not already created.
+
+![Img](https://github.com/iot-for-all/iotc-micropython-client/tree/master/assets/auto_approval.jpg)
+
+### Manual approval
+If auto-approval is disabled, administrators need to manually approve new devices.
 This can be done from explorer page after selecting the device
-![Img](assets/manual_approval.jpg)
-
-
-### Automatic approval
-To change default behavior, administrator can enable device auto-approval from Device Connection page under the Administration section.
-With automatic approval a device can be provisioned without any manual action and can start sending/receiving data after status changes to "Provisioned"
-
-![Img](assets/auto_approval.jpg)
+![Img](https://github.com/iot-for-all/iotc-micropython-client/tree/master/assets/manual_approval.jpg)
 
 ## License
 This samples is licensed with the MIT license. For more information, see [LICENSE](./LICENSE)
