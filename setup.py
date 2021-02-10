@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='micropython-iotc',
-      version='1.0.5',
+      version='1.1.0',
       description='Azure IoT Central client for MicroPython (mqtt protocol)',
       long_description=long_description,
       long_description_content_type="text/markdown",
